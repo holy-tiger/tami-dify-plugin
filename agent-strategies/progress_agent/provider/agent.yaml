@@ -1,0 +1,15 @@
+identity:
+  author: tami
+  name: progress_agent
+  label:
+    en_US: Progress-Aware Agent
+    zh_Hans: 进度感知 Agent
+  description:
+    en_US: Tool-using agent with iteration budget awareness.
+    zh_Hans: 可感知迭代预算并检查任务进展的工具调用 Agent。
+  icon: icon.svg
+strategies:
+  - strategies/function_calling.yaml
+extra:
+  python:
+    source: provider/agent.py

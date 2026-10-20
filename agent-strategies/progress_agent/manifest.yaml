@@ -1,0 +1,35 @@
+version: 0.0.2
+type: plugin
+author: tami
+name: progress_agent
+label:
+  en_US: Progress-Aware Agent
+  zh_Hans: 进度感知 Agent
+description:
+  en_US: Function calling with runtime budget state and tool-free finalization. Configure progress policies in the Agent instruction.
+  zh_Hans: 注入可配置的迭代预算状态，预留无工具收尾阶段；进展评估规则由 Agent 指令配置。
+created_at: "2026-10-20T00:00:00.000000000Z"
+icon: icon.svg
+tags:
+  - agent
+resource:
+  memory: 268435456
+  permission:
+    tool:
+      enabled: true
+    model:
+      enabled: true
+      llm: true
+plugins:
+  agent_strategies:
+    - provider/agent.yaml
+meta:
+  version: 0.0.2
+  minimum_dify_version: "1.7.0"
+  arch:
+    - amd64
+    - arm64
+  runner:
+    language: python
+    version: "3.12"
+    entrypoint: main

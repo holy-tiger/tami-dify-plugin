@@ -1,0 +1,118 @@
+identity:
+  name: progress_function_calling
+  author: tami
+  label:
+    en_US: Progress-Aware Function Calling
+    zh_Hans: 进度感知 Function Calling
+description:
+  en_US: Native tool calling with runtime iteration state and tool-free finalization. Set progress review rules in the Agent instruction. Requires function calling support.
+  zh_Hans: 每轮注入迭代状态，预留无工具收尾阶段；请在 Agent 指令中配置进展评估规则。需要支持函数调用的模型。
+features:
+  - history-messages
+parameters:
+  - name: model
+    type: model-selector
+    scope: tool-call&llm
+    required: true
+    label:
+      en_US: Model
+      zh_Hans: 模型
+  - name: tools
+    type: array[tools]
+    required: true
+    label:
+      en_US: Tool list
+      zh_Hans: 工具列表
+  - name: allowed_tools
+    type: any
+    scope: array[string]
+    required: false
+    label:
+      en_US: Allowed tools
+      zh_Hans: 允许的工具
+    help:
+      en_US: Optional tool names. Leave empty to expose all selected tools.
+      zh_Hans: 可选工具名称列表，留空时允许使用全部已选择的工具。
+  - name: instruction
+    type: string
+    required: true
+    label:
+      en_US: Instruction
+      zh_Hans: 指令
+    auto_generate:
+      type: prompt_instruction
+    template:
+      enabled: true
+  - name: query
+    type: string
+    required: true
+    label:
+      en_US: Query
+      zh_Hans: 查询
+    template:
+      enabled: true
+  - name: context
+    type: any
+    scope: array[object]
+    required: false
+    label:
+      en_US: Context
+      zh_Hans: 检索上下文
+  - name: files
+    type: any
+    scope: array[file]
+    required: false
+    label:
+      en_US: Current-turn files
+      zh_Hans: 当前轮文件
+  - name: maximum_iterations
+    type: string
+    required: true
+    default: "30"
+    label:
+      en_US: Maximum iterations
+      zh_Hans: 最大迭代轮数
+    help:
+      en_US: Integer 1-500, including finalization. Enter a constant or insert a Chatflow variable.
+      zh_Hans: 1-500 的整数，包含收尾轮次。可填常量或插入 Chatflow 变量。
+    template:
+      enabled: true
+  - name: progress_check_start
+    type: string
+    required: true
+    default: "20"
+    label:
+      en_US: First progress check
+      zh_Hans: 首次进展检查轮次
+    help:
+      en_US: Integer from 1 to maximum iterations. Adjust this too when reducing the maximum. Finalization takes precedence.
+      zh_Hans: 1 到最大轮数的整数。缩小最大轮数时请同步调整；收尾阶段优先于检查点。
+    template:
+      enabled: true
+  - name: progress_check_interval
+    type: string
+    required: true
+    default: "5"
+    label:
+      en_US: Progress check interval
+      zh_Hans: 进展检查间隔
+    help:
+      en_US: Integer 1-500. With start 20 and interval 5, check rounds 20, 25, etc. before finalization.
+      zh_Hans: 1-500 的整数。起点 20、间隔 5 时，在收尾前的第 20、25 等轮检查。
+    template:
+      enabled: true
+  - name: final_response_rounds
+    type: string
+    required: true
+    default: "1"
+    label:
+      en_US: Reserved finalization rounds
+      zh_Hans: 预留收尾轮数
+    help:
+      en_US: Integer from 1 to maximum iterations. Tools are disabled in this tail window; the first final answer ends execution.
+      zh_Hans: 1 到最大轮数的整数。尾部这些轮次禁用工具，首个最终回答即结束，不强制用完预算。
+    template:
+      enabled: true
+extra:
+  python:
+    source: strategies/function_calling.py
